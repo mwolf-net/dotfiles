@@ -1,0 +1,7 @@
+# Loaded from ~/.zshrc (setup-dotfiles.sh adds the line that does that).
+_dotfiles=${${(%):-%x}:A:h:h}    # the repo, found from this file's own location
+
+[[ -d "$_dotfiles/bin" ]] && export PATH="$_dotfiles/bin:$PATH"
+source "$_dotfiles/shell/aliases"
+
+unset _dotfiles

@@ -1,0 +1,22 @@
+# Sample ~/.gitconfig: copy the parts you want. No script here writes ~/.gitconfig.
+
+[user]
+	name = Your Name
+	email = you@example.com
+
+[core]
+	# A global gitignore. This repo has one in git/ignore; point at it, or copy it to
+	# ~/.config/git/ignore, which git reads by default without this setting.
+	excludesFile = ~/.config/git/ignore
+
+[init]
+	defaultBranch = main
+
+# Let the GitHub CLI handle git's HTTPS logins (`gh auth setup-git` writes this for you).
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+# Machine-specific settings, e.g. a work email, read last so they win.
+[include]
+	path = ~/.gitconfig.local

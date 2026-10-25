@@ -1,0 +1,4 @@
+# Global gitignore. Use it with `core.excludesFile` (see gitconfig.sample).
+.DS_Store
+*.swp
+*~

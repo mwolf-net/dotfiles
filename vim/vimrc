@@ -1,0 +1,99 @@
+" vim/vimrc, loaded from ~/.vimrc (setup-vim.sh adds the line that does that).
+
+" Using vim-plug as the plugin manager. To replicate this on a clean machine, run
+" this first:
+"     curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+"           https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" Note: after adding a new plug, reloading vimrc isn't sufficient, you need to
+" run :PlugInstall.
+call plug#begin()
+Plug 'morhetz/gruvbox'              " colorscheme
+Plug 'vim-airline/vim-airline'      " nice statusline
+Plug 'preservim/nerdtree'           " file explorer (Ctrl+n to toggle)
+Plug 'ctrlpvim/ctrlp.vim'           " Use Ctrl+P to bring up file/buffer menu
+Plug 'tpope/vim-sensible'           " sensible defaults everyone agrees on
+
+" FZF plugin for file and buffers menu (alternative for Ctrl+P). Note, this
+" relies on a library which must be installed via 'brew install fzf' first.
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+call plug#end()
+
+colorscheme desert
+set background=dark
+highlight LineNr guifg=#888888  " Make line numbers subtle grey
+
+" Comfort settings that don't change keybindings
+set hidden              " Allow moving away from a buffer that has changes
+set clipboard=unnamed   " y/p use the Mac clipboard directly
+set selectmode=         " Disable MacVim specific handling of selecting text with the mouse
+set number              " show absolute line numbers -- on by default, toggle with C-n
+"set relativenumber     " show relative line numbers (great for jump commands like 5j)
+set cursorline          " highlight the line the cursor is on
+set wildmenu            " show a completion menu when tabbing through : commands
+set incsearch           " jump to search matches as you type
+set hlsearch            " highlight all matches after a search
+set splitright          " open vertical splits to the right instead of left
+set splitbelow          " open horizontal splits below instead of above
+set tabstop=4
+
+" Write swapfiles to a central directory instead of leaving stray swapfiles
+" all over the place
+set directory=$HOME/.vim/swapfiles//
+
+" Use Control-t to activate NerdTree file browser
+nnoremap <C-t> :NERDTreeToggle<CR>
+
+" Mapping for the buffers menu of FZF. (For the Files menu, just use
+" NErdtree.) This replaces "scroll back half a screen" but there's other
+" options for that such as Ctrl-U (scroll back a full screen) or PageUp.
+nnoremap <C-b> :Buffers<CR>
+
+" Use Control-n to toggle line numbering
+nnoremap <C-n> :set number!<CR>
+
+" Use Control-h to hide the last search result
+nnoremap <C-h> :nohlsearch<CR>
+
+" Helper functions for working with the vimrc file: this file, wherever the repo is.
+let s:vimrc = expand('<sfile>:p')
+command! LoadVimRc source ~/.vimrc
+command! EditVimRc execute 'edit' fnameescape(s:vimrc)
+
+" Quickly record a macro with 'qq' and execute it with Space
+nnoremap <Space> @q
+
+" Use capital Q to reformat a paragraph. This replaces the binding for going into Ex mode.
+nnoremap Q gqap
+
+" From Normal mode, open file-under-cursor in an external tool with gF. Relies
+" on 'open' being present and doing the right thing.
+nnoremap gF :!open <cfile><CR>
+
+" Allow using %% on the commandline to specify "directory of current file"
+cabbr <expr> %% expand('%:p:h')
+
+" Suppress annoying message when doing Ctrl-C in Normal Mode
+nnoremap <C-c> <Esc>
+
+" Renumber a list. If a pattern is given, it's a regexp which must match immediately before the
+" number. Otherwise we match the first number on each line which is not part of a larger identifier.
+func! Renumber(...) range
+    let pattern = get(a:000, 0, '\<') . '\m\zs\d\+\>'
+    let atFirst = 1
+    for linenr in range(a:firstline,a:lastline)
+        let m = matchstr(getline(linenr), pattern)
+        if m
+            let n = atFirst ? str2nr(m) : n + 1
+            exec linenr . 'sm/' . pattern . '/' . n
+            let atFirst = 0
+        endif
+    endfor
+endfunc
+
+command! -range Renumber <line1>,<line2>call Renumber()
+command! -range RenumberProtobuf <line1>,<line2>call Renumber('^\v\s*(required|optional|repeated).*\=\s*')
+vnoremap <leader>n :Renumber<cr>
+vnoremap <leader>N :RenumberProtobuf<cr>
+nnoremap <leader>n Vi{:Renumber<cr>
+nnoremap <leader>N Vi{:RenumberProtobuf<cr>

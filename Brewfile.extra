@@ -1,0 +1,52 @@
+# Extra: for a fully equipped private machine with plenty of disk space. Several GB.
+# Installed on top of Brewfile by brew-install-full.sh.
+
+tap "mwolf-net/tap"
+
+# Network & mail
+brew "nmap"
+brew "mutt"
+
+# JVM
+brew "openjdk@17"
+brew "openjdk@21"
+brew "openjdk"
+brew "gradle"
+brew "kotlin"
+brew "maven"
+
+# Cloud & Kubernetes
+brew "awscli"
+brew "opentofu"
+brew "kubectl"
+brew "helm"
+brew "eksctl"
+brew "k9s"
+brew "kubectx"
+
+# Documents, diagrams, media (heavy)
+brew "mermaid-cli"
+brew "plantuml"
+brew "imagemagick"
+brew "ghostscript"
+brew "ffmpeg"
+brew "exiftool"
+brew "tectonic"
+
+# Maps / GPX / OSM
+brew "osmium-tool"
+brew "osmosis"
+brew "gdal"
+brew "gpsbabel"
+brew "proj"
+
+# AI
+brew "ollama"
+brew "whisper-cpp"
+
+# Apps
+cask "mwolf-net/tap/martins-display-helpers"
+cask "keepassxc"
+
+# Casks that need sudo
+cask "mactex-no-gui"   # full TeX Live, e.g. for PDFs from pandoc with lualatex

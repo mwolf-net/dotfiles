@@ -1,0 +1,4 @@
+# Aliases, loaded by shell/zshrc.
+alias ll='ls -l'
+alias la='ls -a'
+alias cc='claude --continue'    # note: hides the C compiler `cc` in interactive shells
